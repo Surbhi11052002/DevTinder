@@ -1,15 +1,18 @@
 const express = require("express");
 
 const app = express();
+const port = 7777;
 
-app.use("/test", (req, res) => {
-  res.send("this is a test page");
+const { adminAuth } = require("./middlewares/auth");
+
+app.use("/admin", adminAuth);
+
+app.get("/admin/getAlldata", (req, res) => {
+  res.send("All data sent successfully");
 });
-
-app.use("/", (req, res) => {
-  res.send("WElCOME");
+app.delete("/admin/deleteuser", (req, res) => {
+  res.send("User Data deleted successfully");
 });
-
-app.listen(7777, () => {
-  console.log("Server is successfully listening on port 7777..");
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
