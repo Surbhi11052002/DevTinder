@@ -6,7 +6,31 @@ const app = express();
 const port = 7777;
 
 app.use(express.json());
-//POST user api
+
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, data, {
+      runValidators: true,
+    });
+    res.send("User updated successfully");
+  } catch (err) {
+    res.status(400).send("User data not updated" + err.message);
+  }
+});
+
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    res.send("User deleted successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong!");
+  }
+});
 
 app.get("/user", async (req, res) => {
   try {
@@ -32,10 +56,16 @@ app.post("/signup", async (req, res) => {
   const user = new User(req.body);
 
   try {
-    user.save();
+    await user.save();
     res.send("User created successfully");
   } catch (error) {
     res.status(500).send("Error saving the user" + error.message);
+  }
+});
+
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Something went wrong");
   }
 });
 
