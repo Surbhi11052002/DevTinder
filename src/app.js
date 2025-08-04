@@ -7,11 +7,28 @@ const port = 7777;
 
 app.use(express.json());
 
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
 
   try {
+    const ALLOWED_UPDATES = [
+      "photoURL",
+      "about",
+      "gender",
+      "skills",
+      "firstName",
+      "lastName",
+      "age",
+    ];
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+
+    if (!isUpdateAllowed) throw new Error("Update not allowed");
+
+    if (data?.skills.length > 10)
+      throw new Error("You can only add upto 10 skills");
     const user = await User.findByIdAndUpdate(userId, data, {
       runValidators: true,
     });
