@@ -89,7 +89,7 @@ requestRouter.post(
       connectionRequest.status = status;
       const data = await connectionRequest.save();
       res.json({
-        message: `You've ${status} the request from ${loggedInUser.firstName}`,
+        message: `You've ${status} the request`,
         data,
       });
     } catch (err) {
